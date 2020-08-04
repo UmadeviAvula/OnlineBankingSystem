@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Registration</title>
+<style>
+body{text-align:center;}
+table{text-align:"center";
+       border:"";
+       margin-left:"auto";
+       margin-right:"auto"}
+</style>
+</head>
+<body>
+<form action="/dynamicproject/reg" method="post">  
+<table>  
+<tr><td>Name</td><td>:<input type="text" name="userName"></td></tr>  
+<tr><td>Email Id</td><td>:<input type="text" name="userEmail"></td></tr>  
+<tr><td>Password</td><td>:<input type="password" name="userPass"></td></tr>
+<tr><td>Bank Name</td><td>:<input type="text" name="bankName"></td></tr>
+<tr><td>Account Number</td><td>:<input type="text" name="accNumber"/></td></tr>
+<tr><td>Gender</td><td><input type="radio" name="gender"  id="Male" value="Male">
+                       <label for="Male">Male</label>
+                       <input type="radio" name="gender" id="Female" value="Female">
+                       <label for="Female">Female</label> 
+                       <input type="radio" name="gender" id="others" value="Others">
+                       <label for="others">Others</label> </td></tr>
+<tr><td>Mobile Number</td><td>:<input type="text" name="number"></td></tr>
+<tr><td>Address</td><td>:<input type="text" name="address"> 
+ </td></tr> </table> 
+<input type="submit" value="register"> </form>  
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Transaction</title>
+<style>
+body{text-align:center;}
+table{text-align:"center";
+       border:"";
+       margin-left:"auto";
+       margin-right:"auto"}
+</style>
+</head>
+<body>
+<form action="/dynamicproject/trans" method="post">
+<table><tr><td>
+Name</td><td>:<input type="text" name="userName"/></td></tr>  
+<tr><td>From Account Number:</td><td>:<input type="text" name="faccNumber"/></td></tr>
+<tr><td>To Account Number:</td><td>:<input type="text" name="taccNumber"/></td></tr>
+<tr><td>Amount</td><td>:<input type="number" name="amount"/></td></tr></table>
+<input type="submit" value="fund transfer"/>  
+</form>
+</body>
+</html>
