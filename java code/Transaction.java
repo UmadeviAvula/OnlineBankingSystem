@@ -8,6 +8,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
 import javax.servlet.ServletException;
@@ -15,17 +16,16 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import java.time.LocalDateTime; 
 
 @WebServlet("/trans")
 public class Transaction extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static java.sql.Date getCurrentDate() {
-	    java.util.Date today = new java.util.Date();
-	    return new java.sql.Date(today.getTime());
+	private static java.sql.Timestamp gettime(){
+	LocalDateTime now = LocalDateTime.now();
+	Timestamp timestamp = Timestamp.valueOf(now);
+	return timestamp;
 	}
-
-
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");  
 		PrintWriter out = response.getWriter();  
@@ -34,8 +34,6 @@ public class Transaction extends HttpServlet {
 		String acc=request.getParameter("faccNumber"); 
 		String tacc=request.getParameter("taccNumber"); 
 		int amount=Integer.parseInt(request.getParameter("amount"));  
-		//Date date=new Date();
-		
 		try{  
 			Class.forName("org.mariadb.jdbc.Driver").newInstance();
 			Connection con=DriverManager.getConnection("jdbc:mariadb://localhost:3306/uma","root","");  
@@ -46,33 +44,30 @@ public class Transaction extends HttpServlet {
 		ps.setString(2,acc);  
 		ps.setString(3,tacc);  
 		ps.setInt(4,amount);  
-		ps.setDate(5,getCurrentDate() );
-		ResultSet rs=ps.executeQuery();
-		if(rs.next())
-			System.out.println("Money Transfered Successfully");
-		Login l=new Login();
-		//String a;
-		//a=l.ac;
+		ps.setTimestamp(5, gettime());
+		ps.executeQuery();
+		System.out.println("Money Transfered Successfully"+"\n");
+		//Update query
+		ps=con.prepareStatement(  
+				"update useraccounts set balance=balance-? where accountnumber=+?");
+		ps.setInt(1,amount);
+		ps.setString(2, acc);
+		ps.executeQuery();
 		ResultSet rs2 = stat.executeQuery(
 				"select * from useraccounts where accountnumber="+acc);
-		rs2.next();
-		int bal=rs2.getInt("balance");
-		bal=bal-amount;
-		ResultSet rs3 = stat.executeQuery(
-				"update useraccounts set balance=balance-amount where accountnumber="+acc);
-		if(rs3.next())
-			System.out.println("Amount is debited from your account-"+acc);
-		System.out.println("Available balance"+"--"+bal);
+		if(rs2.next()) {
+			int bal=rs2.getInt("balance");
+			System.out.println("Amount is debited from your account-"+acc+"\n");
+		System.out.println("Available balance"+"--"+bal+"\n");}
 		System.out.println("Last Five Transactions...");
 		ResultSet rs1 = stat.executeQuery(
-				"select * from usertransactions order by TransferTime ASC");
+				"select * from usertransactions order by TransferTime DESC");
 		int i=1;
         while (rs1.next()) {    
-			System.out.println(rs1.getString("name")  +"--From--"  + rs1.getString("faccountnumber")+"--To--"+rs1.getString("taccountnumber")+"--"+rs1.getInt("amount")+"--"+rs1.getDate("TransferTime"));
+			System.out.println(rs1.getString("name")  +"--From--"  + rs1.getString("faccountnumber")+"--To--"+rs1.getString("taccountnumber")+"--"+rs1.getInt("amount")+"--"+rs1.getTimestamp("TransferTime"));
 		    if(i==5)
 		    	break;
 			i++;
-		//rs1.next();
         }
 				}catch (Exception e2) {System.out.println(e2);}  
 		          
