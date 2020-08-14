@@ -46,7 +46,7 @@ public class Transaction extends HttpServlet {
 		ps.setInt(4,amount);  
 		ps.setTimestamp(5, gettime());
 		ps.executeQuery();
-		System.out.println("Money Transfered Successfully"+"\n");
+		out.print("Money Transfered Successfully"+"\n");
 		//Update query
 		ps=con.prepareStatement(  
 				"update useraccounts set balance=balance-? where accountnumber=+?");
@@ -57,17 +57,15 @@ public class Transaction extends HttpServlet {
 				"select * from useraccounts where accountnumber="+acc);
 		if(rs2.next()) {
 			int bal=rs2.getInt("balance");
-			System.out.println("Amount is debited from your account-"+acc+"\n");
-		System.out.println("Available balance"+"--"+bal+"\n");}
-		System.out.println("Last Five Transactions...");
+			out.print("Amount is debited from your account-"+acc+"\n");
+		out.print("Available balance"+"--"+bal+"\n");}
+		out.print("Last Five Transactions...");
 		ResultSet rs1 = stat.executeQuery(
-				"select * from usertransactions order by TransferTime DESC");
-		int i=1;
+				"select * from usertransactions order by TransferTime DESC limit 5");
+
         while (rs1.next()) {    
-			System.out.println(rs1.getString("name")  +"--From--"  + rs1.getString("faccountnumber")+"--To--"+rs1.getString("taccountnumber")+"--"+rs1.getInt("amount")+"--"+rs1.getTimestamp("TransferTime"));
-		    if(i==5)
-		    	break;
-			i++;
+			out.print(rs1.getString("name")  +"--From--"  + rs1.getString("faccountnumber")+"--To--"+rs1.getString("taccountnumber")+"--"+rs1.getInt("amount")+"--"+rs1.getTimestamp("TransferTime"));
+		    
         }
 				}catch (Exception e2) {System.out.println(e2);}  
 		          
